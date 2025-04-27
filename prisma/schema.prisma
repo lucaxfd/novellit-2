@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  name          String
+  email         String    @unique
+  password      String
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  novels        Novel[]   @relation("Author")
+  readingList   ReadingList[]
+  views         View[]
+}
+
+model Novel {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String
+  coverImage    String
+  author        User      @relation("Author", fields: [authorId], references: [id])
+  authorId      Int
+  chapters      Chapter[]
+  views         View[]
+  readingLists  ReadingList[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Chapter {
+  id            Int       @id @default(autoincrement())
+  title         String
+  content       String
+  novel         Novel     @relation(fields: [novelId], references: [id])
+  novelId       Int
+  order         Int
+  views         View[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model View {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+  chapter       Chapter   @relation(fields: [chapterId], references: [id])
+  chapterId     Int
+  novel         Novel     @relation(fields: [novelId], references: [id])
+  novelId       Int
+  createdAt     DateTime  @default(now())
+}
+
+model ReadingList {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+  novel         Novel     @relation(fields: [novelId], references: [id])
+  novelId       Int
+  createdAt     DateTime  @default(now())
+}

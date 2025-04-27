@@ -1,0 +1,45 @@
+.subscription-badge-container {
+    position: relative;
+    display: inline-block;
+}
+
+.subscription-badge {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.subscription-badge:hover {
+    transform: scale(1.1);
+}
+
+.subscription-tooltip {
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    min-width: 200px;
+    text-align: center;
+}
+
+.subscription-tooltip p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.subscription-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+} 

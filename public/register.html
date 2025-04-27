@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Novellit</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/novels">Novels</a>
+                <a href="/subscription">Planos</a>
+                <a href="/publish">Publicar</a>
+                <a href="/login">Entrar</a>
+                <a href="/register" class="btn btn-primary active">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="/">Home</a>
+            <a href="/novels">Novels</a>
+            <a href="/subscription">Planos</a>
+            <a href="/publish">Publicar</a>
+            <a href="/login">Entrar</a>
+            <a href="/register" class="active btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h1>Registro</h1>
+            <div id="errorMessage" class="error-message"></div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Senha</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+                <button type="submit" class="register-button">Registrar</button>
+            </form>
+            <p class="login-link">Já tem uma conta? <a href="/login">Faça login</a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Uma plataforma para leitores e escritores de novels.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/novels">Novels</a></li>
+                    <li><a href="/subscription">Planos</a></li>
+                    <li><a href="/publish">Publicar</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="mailto:contato@novellit.com">contato@novellit.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Novellit. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import api from '/js/api.js';
+
+        const errorMessage = document.getElementById('errorMessage');
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            hideError();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showError('As senhas não coincidem');
+                return;
+            }
+
+            try {
+                const response = await api.register(name, email, password);
+                if (response.success) {
+                    window.location.href = '/';
+                } else {
+                    showError(response.error || 'Erro ao registrar');
+                }
+            } catch (error) {
+                showError(error.message || 'Erro ao registrar');
+            }
+        });
+    </script>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html> 

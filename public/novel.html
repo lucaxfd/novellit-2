@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novel - Novellit</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="novels.html">Novels</a>
+                <a href="subscription.html">Planos</a>
+                <a href="publish.html">Publicar</a>
+                <a href="login.html" class="btn btn-secondary">Entrar</a>
+                <a href="register.html" class="btn btn-primary">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="novels.html">Novels</a>
+            <a href="subscription.html">Planos</a>
+            <a href="publish.html">Publicar</a>
+            <a href="login.html" class="btn btn-secondary">Entrar</a>
+            <a href="register.html" class="btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main class="novel-container">
+        <section class="novel-hero">
+            <div class="novel-cover">
+                <img id="novelCover" src="" alt="Capa da novel">
+            </div>
+            <div class="novel-info">
+                <h1 id="novelTitle"></h1>
+                <p class="novel-author" id="novelAuthor"></p>
+                <div class="novel-stats">
+                    <span id="novelViews"></span>
+                    <span id="novelRating"></span>
+                </div>
+                <div class="novel-actions">
+                    <button id="readBtn" class="btn btn-primary">Ler Agora</button>
+                    <button id="favoriteBtn" class="btn btn-secondary">Favoritar</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="novel-content">
+            <div class="novel-description">
+                <h2>Descrição</h2>
+                <p id="novelDescription"></p>
+            </div>
+
+            <div class="novel-chapters">
+                <h2>Capítulos</h2>
+                <div id="chaptersList" class="chapters-list"></div>
+            </div>
+
+            <div class="novel-comments">
+                <h2>Comentários</h2>
+                <form id="commentForm" class="comment-form">
+                    <textarea id="commentContent" placeholder="Deixe seu comentário..." required></textarea>
+                    <button type="submit" class="btn btn-primary">Comentar</button>
+                </form>
+                <div id="commentsList" class="comments-list"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Uma plataforma para leitores e escritores de novels.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/novels">Novels</a></li>
+                    <li><a href="/subscription">Planos</a></li>
+                    <li><a href="/publish">Publicar</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="mailto:contato@novellit.com">contato@novellit.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Novellit. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import api from '/js/api.js';
+        import auth from '/js/auth.js';
+
+        const novelId = window.location.pathname.split('/')[2];
+        const novelTitle = document.getElementById('novelTitle');
+        const novelAuthor = document.getElementById('novelAuthor');
+        const novelCover = document.getElementById('novelCover');
+        const novelDescription = document.getElementById('novelDescription');
+        const novelViews = document.getElementById('novelViews');
+        const novelRating = document.getElementById('novelRating');
+        const chaptersList = document.getElementById('chaptersList');
+        const commentsList = document.getElementById('commentsList');
+        const readBtn = document.getElementById('readBtn');
+        const favoriteBtn = document.getElementById('favoriteBtn');
+        const commentForm = document.getElementById('commentForm');
+
+        // Carrega os dados da novel
+        async function loadNovel() {
+            try {
+                const novel = await api.getNovel(novelId);
+                novelTitle.textContent = novel.title;
+                novelAuthor.textContent = `Por ${novel.author}`;
+                novelCover.src = novel.cover_url || '/images/default-cover.jpg';
+                novelDescription.textContent = novel.description;
+                novelViews.textContent = `${novel.views} visualizações`;
+                novelRating.textContent = `⭐ ${novel.rating || 'N/A'}`;
+
+                // Verifica se o usuário está autenticado
+                if (auth.isAuthenticated()) {
+                    const isFavorite = await api.isFavorite(novelId);
+                    favoriteBtn.textContent = isFavorite ? 'Remover dos Favoritos' : 'Favoritar';
+                } else {
+                    favoriteBtn.disabled = true;
+                    favoriteBtn.title = 'Faça login para favoritar';
+                }
+            } catch (error) {
+                alert(error.message || 'Erro ao carregar novel');
+            }
+        }
+
+        // Carrega os capítulos
+        async function loadChapters() {
+            try {
+                const chapters = await api.getChapters(novelId);
+                chaptersList.innerHTML = chapters.map(chapter => `
+                    <div class="chapter-item">
+                        <h3>${chapter.title}</h3>
+                        <button onclick="window.location.href='/chapter/${chapter.id}'" class="btn btn-secondary">
+                            Ler Capítulo
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                alert(error.message || 'Erro ao carregar capítulos');
+            }
+        }
+
+        // Carrega os comentários
+        async function loadComments() {
+            try {
+                const comments = await api.getComments(novelId);
+                commentsList.innerHTML = comments.map(comment => `
+                    <div class="comment-item">
+                        <h4>${comment.author}</h4>
+                        <p>${comment.content}</p>
+                        <small>${new Date(comment.created_at).toLocaleDateString()}</small>
+                    </div>
+                `).join('');
+            } catch (error) {
+                alert(error.message || 'Erro ao carregar comentários');
+            }
+        }
+
+        // Event listeners
+        readBtn.addEventListener('click', () => {
+            window.location.href = `/chapter/${novelId}/1`;
+        });
+
+        favoriteBtn.addEventListener('click', async () => {
+            if (!auth.isAuthenticated()) {
+                window.location.href = '/login';
+                return;
+            }
+
+            try {
+                const isFavorite = await api.isFavorite(novelId);
+                if (isFavorite) {
+                    await api.removeFavorite(novelId);
+                    favoriteBtn.textContent = 'Favoritar';
+                } else {
+                    await api.addFavorite(novelId);
+                    favoriteBtn.textContent = 'Remover dos Favoritos';
+                }
+            } catch (error) {
+                alert(error.message || 'Erro ao atualizar favoritos');
+            }
+        });
+
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!auth.isAuthenticated()) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const content = document.getElementById('commentContent').value;
+            try {
+                await api.addComment(novelId, content);
+                document.getElementById('commentContent').value = '';
+                loadComments();
+            } catch (error) {
+                alert(error.message || 'Erro ao adicionar comentário');
+            }
+        });
+
+        // Inicializa a página
+        loadNovel();
+        loadChapters();
+        loadComments();
+    </script>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar - Novellit</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="novels.html">Novels</a>
+                <a href="subscription.html">Planos</a>
+                <a href="publish.html" class="active">Publicar</a>
+                <a href="login.html" class="btn btn-secondary">Entrar</a>
+                <a href="register.html" class="btn btn-primary">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="novels.html">Novels</a>
+            <a href="subscription.html">Planos</a>
+            <a href="publish.html" class="active">Publicar</a>
+            <a href="login.html" class="btn btn-secondary">Entrar</a>
+            <a href="register.html" class="btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main class="publish-container">
+        <section class="publish-hero">
+            <div class="publish-content">
+                <h1>Compartilhe sua história</h1>
+                <p>Publique sua novel e alcance leitores de todo o mundo</p>
+            </div>
+        </section>
+
+        <section class="publish-form-section">
+            <form class="publish-form" id="publishForm">
+                <div class="form-group">
+                    <label for="title">Título</label>
+                    <input type="text" id="title" name="title" placeholder="Título da sua novel" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descrição</label>
+                    <textarea id="description" name="description" placeholder="Descreva sua novel..." required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="cover_url">URL da Capa</label>
+                    <input type="url" id="cover_url" name="cover_url" placeholder="https://exemplo.com/imagem.jpg">
+                </div>
+                <button type="submit" class="btn btn-primary">Publicar Novel</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Uma plataforma para leitores e escritores de novels.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/novels">Novels</a></li>
+                    <li><a href="/subscription">Planos</a></li>
+                    <li><a href="/publish">Publicar</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="mailto:contato@novellit.com">contato@novellit.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Novellit. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import api from '/js/api.js';
+        import auth from '/js/auth.js';
+
+        // Verifica autenticação
+        if (!auth.isAuthenticated()) {
+            window.location.href = '/login';
+        }
+
+        document.getElementById('publishForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const cover_url = document.getElementById('cover_url').value;
+
+            try {
+                const novel = await api.createNovel({ title, description, cover_url });
+                window.location.href = `/novel/${novel.id}`;
+            } catch (error) {
+                alert(error.message || 'Erro ao publicar novel');
+            }
+        });
+    </script>
+
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html> 

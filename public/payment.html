@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Novelit</title>
+</head>
+<body>
+    <script>
+        // Obter o plano selecionado da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const plan = urlParams.get('plan');
+
+        // Mapear os planos para os links do PagBank
+        const planLinks = {
+            'weekly': 'https://pag.ae/7_Bg6XFjp',
+            'monthly': 'https://pag.ae/7_Bg6XFjp',
+            'yearly': 'https://pag.ae/7_Bg6XFjp'
+        };
+
+        // Redirecionar para o link do PagBank correspondente
+        if (plan && planLinks[plan]) {
+            window.location.href = planLinks[plan];
+        } else {
+            // Se o plano não for válido, redirecionar de volta para a página de assinatura
+            window.location.href = '/subscription';
+        }
+    </script>
+</body>
+</html> 

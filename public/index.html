@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novellit - Sua plataforma de novels</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="novels.html">Novels</a>
+                <a href="subscription.html">Planos</a>
+                <a href="publish.html">Publicar</a>
+                <a href="login.html" class="btn btn-secondary">Entrar</a>
+                <a href="register.html" class="btn btn-primary">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="novels.html">Novels</a>
+            <a href="subscription.html">Planos</a>
+            <a href="publish.html">Publicar</a>
+            <a href="login.html" class="btn btn-secondary">Entrar</a>
+            <a href="register.html" class="btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Bem-vindo ao Novellit</h1>
+                <p>Descubra e leia as melhores novels online. Crie sua própria história e compartilhe com o mundo.</p>
+                <div class="hero-buttons">
+                    <a href="/register" class="cta-button">Começar Agora</a>
+                    <a href="/novels" class="secondary-button">Explorar Novels</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Por que escolher o Novellit?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Leitura Gratuita</h3>
+                    <p>Acesse milhares de novels gratuitamente e descubra novas histórias todos os dias.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Monetização</h3>
+                    <p>Ganhe dinheiro com suas histórias através de visualizações e doações dos leitores.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Comunidade</h3>
+                    <p>Conecte-se com outros escritores e leitores, compartilhe ideias e receba feedback.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="trending">
+            <h2>Novels em Destaque</h2>
+            <div class="novels-grid" id="trendingNovels">
+                <!-- As novels serão carregadas dinamicamente aqui -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Sua plataforma de novels favorita.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="/">Home</a>
+                <a href="/novels">Novels</a>
+                <a href="/login">Entrar</a>
+                <a href="/register">Registrar</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: contato@novellit.com</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2024 Novellit. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+
+        // Carregar novels em destaque
+        async function loadTrendingNovels() {
+            try {
+                const response = await fetch('/api/novels/trending');
+                const novels = await response.json();
+                
+                const novelsGrid = document.getElementById('trendingNovels');
+                novels.forEach(novel => {
+                    const novelCard = document.createElement('div');
+                    novelCard.className = 'novel-card';
+                    novelCard.innerHTML = `
+                        <img src="${novel.coverImage}" alt="${novel.title}">
+                        <div class="novel-card-content">
+                            <h3>${novel.title}</h3>
+                            <p>${novel.description}</p>
+                            <a href="/novel/${novel.id}" class="read-more">Ler Agora</a>
+                        </div>
+                    `;
+                    novelsGrid.appendChild(novelCard);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar novels:', error);
+            }
+        }
+
+        // Carregar novels quando a página for carregada
+        document.addEventListener('DOMContentLoaded', loadTrendingNovels);
+    </script>
+</body>
+</html> 

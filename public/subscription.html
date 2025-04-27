@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planos - Novellit</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="novels.html">Novels</a>
+                <a href="subscription.html" class="active">Planos</a>
+                <a href="publish.html">Publicar</a>
+                <a href="login.html" class="btn btn-secondary">Entrar</a>
+                <a href="register.html" class="btn btn-primary">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="novels.html">Novels</a>
+            <a href="subscription.html" class="active">Planos</a>
+            <a href="publish.html">Publicar</a>
+            <a href="login.html" class="btn btn-secondary">Entrar</a>
+            <a href="register.html" class="btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="subscription-hero">
+            <div class="subscription-content">
+                <h1>Escolha seu Plano</h1>
+                <p>Desbloqueie acesso ilimitado a todas as novels e recursos exclusivos</p>
+            </div>
+        </section>
+
+        <section class="plans">
+            <div class="plans-container">
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Plano Semanal</h3>
+                        <div class="plan-price">
+                            <span class="price">R$ 5,00</span>
+                            <span class="period">/semana</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li>Acesso a todas as novels</li>
+                        <li>Leitura offline</li>
+                        <li>Suporte básico</li>
+                        <li>Sem anúncios</li>
+                    </ul>
+                    <button class="plan-button" onclick="selectPlan('weekly')">Assinar Agora</button>
+                </div>
+
+                <div class="plan-card featured">
+                    <div class="plan-badge">Mais Popular</div>
+                    <div class="plan-header">
+                        <h3>Plano Mensal</h3>
+                        <div class="plan-price">
+                            <span class="price">R$ 15,00</span>
+                            <span class="period">/mês</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li>Acesso a todas as novels</li>
+                        <li>Leitura offline</li>
+                        <li>Suporte prioritário</li>
+                        <li>Sem anúncios</li>
+                        <li>Desconto de 17%</li>
+                    </ul>
+                    <button class="plan-button featured" onclick="selectPlan('monthly')">Assinar Agora</button>
+                </div>
+
+                <div class="plan-card">
+                    <div class="plan-header">
+                        <h3>Plano Trimestral</h3>
+                        <div class="plan-price">
+                            <span class="price">R$ 29</span>
+                            <span class="period">/trimestre</span>
+                        </div>
+                    </div>
+                    <ul class="plan-features">
+                        <li>Acesso a todas as novels</li>
+                        <li>Leitura offline</li>
+                        <li>Suporte prioritário</li>
+                        <li>Sem anúncios</li>
+                        <li>Desconto de 30%</li>
+                    </ul>
+                    <button class="plan-button" onclick="selectPlan('quarterly')">Assinar Agora</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <h2>Perguntas Frequentes</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <h3>Como funciona o pagamento?</h3>
+                    <p>O pagamento é processado de forma segura através de cartão de crédito ou PIX. Você será cobrado automaticamente no início de cada período.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Posso cancelar a qualquer momento?</h3>
+                    <p>Sim, você pode cancelar sua assinatura a qualquer momento. O acesso continuará até o final do período pago.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Posso mudar de plano?</h3>
+                    <p>Sim, você pode mudar de plano a qualquer momento. A alteração será aplicada no próximo período de cobrança.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Sua plataforma de novels favorita.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="/">Home</a>
+                <a href="/novels">Novels</a>
+                <a href="/subscription">Planos</a>
+                <a href="/publish">Publicar</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: contato@novellit.com</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2024 Novellit. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Preços dos planos
+        const planPrices = {
+            weekly: { price: '5,00', name: 'Plano Semanal', description: 'Acesso ilimitado por 7 dias' },
+            monthly: { price: '15,00', name: 'Plano Mensal', description: 'Acesso ilimitado por 30 dias' },
+            yearly: { price: '150,00', name: 'Plano Anual', description: 'Acesso ilimitado por 1 ano' }
+        };
+
+        // Função para selecionar um plano
+        function selectPlan(plan) {
+            // Remover a classe 'selected' de todos os planos
+            document.querySelectorAll('.subscription-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Adicionar a classe 'selected' ao plano clicado
+            const selectedPlan = document.getElementById(`${plan}-plan`);
+            selectedPlan.classList.add('selected');
+
+            // Atualizar o botão de assinar
+            const subscribeButton = document.getElementById('subscribe-button');
+            subscribeButton.disabled = false;
+            subscribeButton.textContent = `Assinar ${planPrices[plan].name}`;
+            subscribeButton.onclick = () => handleSubscribe(plan);
+        }
+
+        const handleSubscribe = async (plan) => {
+            try {
+                setLoading(true);
+                // Redirecionar para a página de pagamento com o plano selecionado
+                window.location.href = `/payment?plan=${plan.id}`;
+            } catch (error) {
+                console.error('Erro ao processar pagamento:', error);
+                toast.error('Erro ao processar pagamento. Tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        // Menu mobile
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html> 

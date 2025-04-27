@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Novels - Novellit</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="novels.html" class="active">Novels</a>
+                <a href="subscription.html">Planos</a>
+                <a href="publish.html">Publicar</a>
+                <a href="login.html" class="btn btn-secondary">Entrar</a>
+                <a href="register.html" class="btn btn-primary">Registrar</a>
+            </div>
+        </nav>
+    </header>
+
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="nav-brand">
+                <a href="/">Novellit</a>
+            </div>
+            <button class="menu-toggle" id="closeSidebar">✕</button>
+        </div>
+        <div class="mobile-sidebar-links">
+            <a href="index.html">Home</a>
+            <a href="novels.html" class="active">Novels</a>
+            <a href="subscription.html">Planos</a>
+            <a href="publish.html">Publicar</a>
+            <a href="login.html" class="btn btn-secondary">Entrar</a>
+            <a href="register.html" class="btn btn-primary">Registrar</a>
+        </div>
+    </div>
+
+    <main>
+        <section class="novels-hero">
+            <div class="novels-content">
+                <h1>Descubra Novas Histórias</h1>
+                <p>Explore nossa coleção de novels e encontre sua próxima aventura</p>
+            </div>
+        </section>
+
+        <section class="novels-filters">
+            <div class="filters-container">
+                <div class="search-box">
+                    <input type="text" placeholder="Buscar novels..." id="searchInput">
+                    <button type="button" class="search-button">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 19L13 13M15 8C15 11.866 11.866 15 8 15C4.13401 15 1 11.866 1 8C1 4.13401 4.13401 1 8 1C11.866 1 15 4.13401 15 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="filter-options">
+                    <select id="genreFilter">
+                        <option value="">Todos os Gêneros</option>
+                        <option value="fantasia">Fantasia</option>
+                        <option value="romance">Romance</option>
+                        <option value="acao">Ação</option>
+                        <option value="aventura">Aventura</option>
+                        <option value="misterio">Mistério</option>
+                    </select>
+                    <select id="sortFilter">
+                        <option value="recent">Mais Recentes</option>
+                        <option value="popular">Mais Populares</option>
+                        <option value="rating">Melhor Avaliadas</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="novels-grid-section">
+            <div class="novels-grid" id="novelsGrid">
+                <!-- As novels serão carregadas dinamicamente aqui -->
+            </div>
+            <div class="pagination">
+                <button class="pagination-button" id="prevPage" disabled>Anterior</button>
+                <span class="page-info">Página <span id="currentPage">1</span></span>
+                <button class="pagination-button" id="nextPage">Próxima</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Novellit</h3>
+                <p>Sua plataforma de novels favorita.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="/">Home</a>
+                <a href="/novels">Novels</a>
+                <a href="/subscription">Planos</a>
+                <a href="/publish">Publicar</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>Email: contato@novellit.com</p>
+            </div>
+        </div>
+        <p class="copyright">&copy; 2024 Novellit. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        let currentPage = 1;
+        const novelsPerPage = 12;
+
+        async function loadNovels(page = 1) {
+            try {
+                const response = await fetch(`/api/novels?page=${page}&limit=${novelsPerPage}`);
+                const data = await response.json();
+                
+                const novelsGrid = document.getElementById('novelsGrid');
+                novelsGrid.innerHTML = '';
+
+                data.novels.forEach(novel => {
+                    const novelCard = document.createElement('div');
+                    novelCard.className = 'novel-card';
+                    novelCard.innerHTML = `
+                        <img src="${novel.coverImage}" alt="${novel.title}">
+                        <div class="novel-card-content">
+                            <h3>${novel.title}</h3>
+                            <p>${novel.description}</p>
+                            <div class="novel-meta">
+                                <span class="author">Por ${novel.author.name}</span>
+                                <span class="views">${novel.views} visualizações</span>
+                            </div>
+                            <a href="/novel/${novel.id}" class="read-more">Ler Agora</a>
+                        </div>
+                    `;
+                    novelsGrid.appendChild(novelCard);
+                });
+
+                // Atualizar paginação
+                document.getElementById('currentPage').textContent = page;
+                document.getElementById('prevPage').disabled = page === 1;
+                document.getElementById('nextPage').disabled = !data.hasMore;
+            } catch (error) {
+                console.error('Erro ao carregar novels:', error);
+            }
+        }
+
+        // Event listeners para paginação
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadNovels(currentPage);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            currentPage++;
+            loadNovels(currentPage);
+        });
+
+        // Event listener para busca
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            // Implementar busca
+            console.log('Buscar:', e.target.value);
+        });
+
+        // Carregar novels quando a página for carregada
+        document.addEventListener('DOMContentLoaded', () => loadNovels(currentPage));
+
+        const menuToggle = document.getElementById('menuToggle');
+        const closeSidebar = document.getElementById('closeSidebar');
+        const mobileSidebar = document.getElementById('mobileSidebar');
+
+        menuToggle.addEventListener('click', () => {
+            mobileSidebar.classList.add('active');
+        });
+
+        closeSidebar.addEventListener('click', () => {
+            mobileSidebar.classList.remove('active');
+        });
+
+        // Fecha o sidebar quando um link é clicado
+        document.querySelectorAll('.mobile-sidebar-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileSidebar.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html> 
